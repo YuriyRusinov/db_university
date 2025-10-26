@@ -2,6 +2,9 @@
 
 #include <QMainWindow>
 #include <QSharedPointer>
+#include <memory>
+
+#include "university_singleton.hpp"
 
 class QMdiArea;
 
@@ -21,6 +24,7 @@ private slots:
 private:
     Ui::students_db_main_window* _UI;
     QSharedPointer<QMdiArea> m_mdiArea;
+    UniversitySingleton& m_UnivSt;
 
 private:
     Q_OBJECT

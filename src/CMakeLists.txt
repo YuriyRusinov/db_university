@@ -38,6 +38,7 @@ set(HEADERS
     university_db.hpp
     dbresult.hpp
     dbpgresult.hpp
+    university_singleton.hpp
 )
 
 set(SOURCES
@@ -45,6 +46,7 @@ set(SOURCES
     university_db.cpp
     dbresult.cpp
     dbpgresult.cpp
+    university_singleton.cpp
 )
 
 set(RESOURCES
