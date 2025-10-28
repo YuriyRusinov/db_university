@@ -26,6 +26,7 @@ StudentsDbMainWindow::~StudentsDbMainWindow() {
 
 void StudentsDbMainWindow::slotDbConnect() {
     qDebug() << __PRETTY_FUNCTION__;
+    bool isConnect = m_UnivSt.getCore()->GUIConnect();
 }
 
 void StudentsDbMainWindow::slotDbDisconnect() {

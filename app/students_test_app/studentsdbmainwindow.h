@@ -4,7 +4,7 @@
 #include <QSharedPointer>
 #include <memory>
 
-#include "university_singleton.hpp"
+#include <university_singleton.hpp>
 
 class QMdiArea;
 

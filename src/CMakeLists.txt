@@ -24,6 +24,9 @@ pkg_check_modules(Libpqxx libpqxx)
 message("Libpqxx include dir ${Libpqxx_INCLUDE_DIRS}")
 message("Libpqxx library dir ${Libpqxx_LIBRARIES}")
 message("Libpqxx library dir ${Libpqxx_LIBRARY_DIRS}")
+message("dataaccess include dir ${db_students_data_access_INCLUDE_DIRS}")
+add_subdirectory(gui)
+add_subdirectory(dataaccess)
 
 include_directories(${PROJECT_SOURCE_DIR}
                     ${CMAKE_CURRENT_BINARY_DIR}
@@ -35,18 +38,16 @@ include_directories(${PROJECT_SOURCE_DIR}
 
 set(HEADERS
     dbstudents.hpp
-    university_db.hpp
-    dbresult.hpp
-    dbpgresult.hpp
     university_singleton.hpp
+    dbCore.h
 )
 
 set(SOURCES
-    dbstudents.cpp
-    university_db.cpp
-    dbresult.cpp
-    dbpgresult.cpp
     university_singleton.cpp
+    dbCore.cpp
+)
+
+set(FORMS
 )
 
 set(RESOURCES
@@ -56,7 +57,11 @@ qt5_wrap_ui(UIS_HDRS ${FORMS} )
 
 add_library(${PROJECT_NAME} SHARED ${SOURCES} ${HEADERS} ${UIS_HDRS} ${RESOURCES})
 
-target_link_libraries(${PROJECT_NAME} Qt5::Widgets ${Libpqxx_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} Qt5::Widgets ${Libpqxx_LIBRARIES} db_students_data_access db_gui)
+target_include_directories(${PROJECT_NAME} PUBLIC
+                           "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>"
+                           "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>")
+target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 
 include(GNUInstallDirs)
 install(TARGETS ${PROJECT_NAME}

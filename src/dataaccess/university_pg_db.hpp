@@ -4,17 +4,18 @@
 #include <vector>
 #include <variant>
 #include <memory>
+#include <pqxx/pqxx>
 
-#include "eopdbresult.h"
+#include "dbresult.hpp"
 
-#include "eopdatabase.h"
+#include "university_db.hpp"
 
-class EOPPgDatabase : public EOPDatabase {
+class UniversityPgDb : public UniversityDb {
 public:
-    EOPPgDatabase();
-    EOPPgDatabase( const EOPPgDatabase& ) = delete;
-    EOPPgDatabase& operator=( const EOPPgDatabase& ) = delete;
-    virtual ~EOPPgDatabase();
+    UniversityPgDb();
+    UniversityPgDb( const UniversityPgDb& ) = delete;
+    UniversityPgDb& operator=( const UniversityPgDb& ) = delete;
+    virtual ~UniversityPgDb();
 
     virtual bool connectStr( std::string connectionString ) const override;
     virtual bool connect( string _ipServer = string(),

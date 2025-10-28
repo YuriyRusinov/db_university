@@ -12,8 +12,8 @@
 #include <pqxx/result>
 #include <pqxx/version>
 
-#include "eopdbpgresult.h"
-#include "eoppgdatabase.h"
+#include "dbpgresult.hpp"
+#include "university_pg_db.hpp"
 
 using std::cout;
 using std::cerr;
@@ -22,19 +22,19 @@ using std::stringstream;
 using std::ios_base;
 using pqxx::connection;
 
-EOPPgDatabase::EOPPgDatabase()
+UniversityPgDb::UniversityPgDb()
     : _dbConnection ( nullptr ),
     _dbWork ( nullptr ), 
     _prepCounter( new int(0) ) {
 }
 
-EOPPgDatabase::~EOPPgDatabase() {
+UniversityPgDb::~UniversityPgDb() {
     disconnect();
     delete _prepCounter;
     std::cout << __PRETTY_FUNCTION__ << std::endl;
 }
 
-bool EOPPgDatabase::connectStr( std::string connectionString ) const {
+bool UniversityPgDb::connectStr( std::string connectionString ) const {
     bool retVal = true;
     try {
         _dbConnection = std::make_shared< pqxx::connection >( connectionString );
@@ -56,7 +56,7 @@ bool EOPPgDatabase::connectStr( std::string connectionString ) const {
     return retVal;
 }
 
-bool EOPPgDatabase::connect( string _ipServer,
+bool UniversityPgDb::connect( string _ipServer,
                                 string _database,
                                 string _user,
                                 string _password, 
@@ -89,22 +89,22 @@ bool EOPPgDatabase::connect( string _ipServer,
     return retVal;
 }
 
-bool EOPPgDatabase::connect( bool reconnect ) const {
+bool UniversityPgDb::connect( bool reconnect ) const {
     return connect( m_ipServer, m_database, m_user, m_password, m_port, reconnect);
 }
 
-void EOPPgDatabase::disconnect( bool reconnect ) const {
+void UniversityPgDb::disconnect( bool reconnect ) const {
     if ( _dbConnection ) {
         _dbConnection.reset();
     }
     return ;
 }
 
-bool EOPPgDatabase::connected() const {
+bool UniversityPgDb::connected() const {
     return (_dbConnection != nullptr && _dbConnection->is_open() );
 }
 
-std::shared_ptr< DbResult > EOPPgDatabase::execute( const char* query ) const {
+std::shared_ptr< DbResult > UniversityPgDb::execute( const char* query ) const {
     if( !_dbConnection )
         return nullptr;
     if( _dbWork )
@@ -122,11 +122,11 @@ std::shared_ptr< DbResult > EOPPgDatabase::execute( const char* query ) const {
     return pRes;
 }
 
-std::shared_ptr< DbResult > EOPPgDatabase::execSQL( const char * sql, ...) const {
+std::shared_ptr< DbResult > UniversityPgDb::execSQL( const char * sql, ...) const {
     return nullptr;
 }
 
-std::shared_ptr< DbResult > EOPPgDatabase::execPrepared(
+std::shared_ptr< DbResult > UniversityPgDb::execPrepared(
                                 const char* stmtName, 
                                 int nParams, 
                                 const char * const * paramValues, 
@@ -138,7 +138,7 @@ std::shared_ptr< DbResult > EOPPgDatabase::execPrepared(
     return nullptr;
 }
 
-std::shared_ptr< DbResult > EOPPgDatabase::execParams(
+std::shared_ptr< DbResult > UniversityPgDb::execParams(
                                 const char* command, 
                                 int nParams, 
                                 const int * paramTypes, 
@@ -265,14 +265,14 @@ std::shared_ptr< DbResult > EOPPgDatabase::execParams(
     return rParamRes;
 }
 
-string EOPPgDatabase::escapeAsciiString(const char * fromString) const {
+string UniversityPgDb::escapeAsciiString(const char * fromString) const {
     if(fromString == nullptr || _dbConnection == nullptr)
         return string();
 
     return _dbConnection->esc( fromString );
 }
 
-string EOPPgDatabase::escapeBinaryString(const unsigned char * fromString) const {
+string UniversityPgDb::escapeBinaryString(const unsigned char * fromString) const {
     if(fromString == nullptr || _dbConnection == nullptr)
         return string();
 
@@ -287,7 +287,7 @@ string EOPPgDatabase::escapeBinaryString(const unsigned char * fromString) const
 #endif
 }
 
-bool EOPPgDatabase::begin() const {
+bool UniversityPgDb::begin() const {
     if( _dbConnection == nullptr || _dbWork != nullptr )
         return false;
 
@@ -295,7 +295,7 @@ bool EOPPgDatabase::begin() const {
     return true;
 }
 
-bool EOPPgDatabase::commit() const {
+bool UniversityPgDb::commit() const {
     if( _dbConnection == nullptr || _dbWork == nullptr )
         return false;
 
@@ -303,7 +303,7 @@ bool EOPPgDatabase::commit() const {
     return true;
 }
 
-bool EOPPgDatabase::rollback() const {
+bool UniversityPgDb::rollback() const {
     if( _dbConnection == nullptr || _dbWork == nullptr )
         return false;
 
