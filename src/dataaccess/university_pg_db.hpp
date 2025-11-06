@@ -60,5 +60,5 @@ public:
 private:
     mutable std::shared_ptr<pqxx::connection> _dbConnection;
     mutable std::shared_ptr<pqxx::work> _dbWork;
-    int* const _prepCounter;
+    std::shared_ptr<int> _prepCounter;
 };

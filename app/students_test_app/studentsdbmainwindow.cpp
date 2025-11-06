@@ -25,12 +25,13 @@ StudentsDbMainWindow::~StudentsDbMainWindow() {
 }
 
 void StudentsDbMainWindow::slotDbConnect() {
-    qDebug() << __PRETTY_FUNCTION__;
     bool isConnect = m_UnivSt.getCore()->GUIConnect();
+    qDebug() << __PRETTY_FUNCTION__ << isConnect;
 }
 
 void StudentsDbMainWindow::slotDbDisconnect() {
     qDebug() << __PRETTY_FUNCTION__;
+    m_UnivSt.getCore()->dbDisconnect();
 }
 
 

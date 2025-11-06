@@ -30,7 +30,8 @@ UniversityPgDb::UniversityPgDb()
 
 UniversityPgDb::~UniversityPgDb() {
     disconnect();
-    delete _prepCounter;
+    std::cout << __PRETTY_FUNCTION__ << ' ' << _prepCounter.use_count() << ' ' << *_prepCounter << std::endl;
+    _prepCounter.reset();
     std::cout << __PRETTY_FUNCTION__ << std::endl;
 }
 
@@ -97,6 +98,7 @@ void UniversityPgDb::disconnect( bool reconnect ) const {
     if ( _dbConnection ) {
         _dbConnection.reset();
     }
+    std::cout << __PRETTY_FUNCTION__ << std::endl;
     return ;
 }
 

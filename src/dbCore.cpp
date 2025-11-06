@@ -42,6 +42,7 @@ bool dbCore::GUIConnect( QWidget* parent, Qt::WindowFlags flags )
 }
 
 void dbCore::dbDisconnect() {
+    m_Db->disconnect();
 }
 
 std::unique_ptr<dbCore> dbCore::create( QObject* parent ) {
