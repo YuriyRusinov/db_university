@@ -22,6 +22,7 @@ public:
     virtual ~dbCore();
     bool GUIConnect( QWidget* parent=nullptr, Qt::WindowFlags flags=Qt::WindowFlags() );
     void dbDisconnect();
+    bool GUIViewDepartments( QWidget* parent=nullptr, Qt::WindowFlags flags=Qt::WindowFlags() );
 
     std::shared_ptr<UniversityDb> getDb() const;
 

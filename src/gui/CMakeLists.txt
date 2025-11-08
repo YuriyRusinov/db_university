@@ -32,14 +32,17 @@ set(CMAKE_BUILD_TYPE Debug)
 
 set(HEADERS
     dbLoginForm.h
+    dbEntitiesForm.h
 )
 
 set(SOURCES
     dbLoginForm.cpp
+    dbEntitiesForm.cpp
 )
 
 set(FORMS
     db_login_form.ui
+    db_entities_form.ui
 )
 
 set(RESOURCES

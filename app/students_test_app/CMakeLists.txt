@@ -52,7 +52,7 @@ qt5_wrap_ui(UIS_HDRS ${FORMS} )
 
 add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS} ${UIS_HDRS} ${RESOURCES} )
 
-target_link_libraries(${PROJECT_NAME} Qt5::Widgets students_db db_students_data_access db_gui)
+target_link_libraries(${PROJECT_NAME} Qt5::Widgets students_db db_students_data_access db_gui db_entities)
 
 install(TARGETS ${PROJECT_NAME}
   RUNTIME DESTINATION bin

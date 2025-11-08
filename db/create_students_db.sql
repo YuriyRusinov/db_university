@@ -37,7 +37,7 @@ CREATE TABLE Departments (
 CREATE TABLE Students (
     id SERIAL PRIMARY KEY,
     uuid UUID DEFAULT gen_random_uuid() UNIQUE NOT NULL,
-    student_number VARCHAR(20) UNIQUE NOT NULL,
+    student_number biginteger UNIQUE NOT NULL,
     first_name VARCHAR(50) NOT NULL,
     middle_name VARCHAR(50),
     last_name VARCHAR(50) NOT NULL,

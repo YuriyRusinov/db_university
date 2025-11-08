@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.30)
 
-project(students_db VERSION 1.0)
+project(db_entities VERSION 1.0)
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
@@ -18,33 +18,25 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -lpqxx -lpq")
 
-find_package(Qt5 COMPONENTS Widgets REQUIRED)
+find_package(Qt5 COMPONENTS Core REQUIRED)
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(Libpqxx libpqxx)
 message("Libpqxx include dir ${Libpqxx_INCLUDE_DIRS}")
 message("Libpqxx library dir ${Libpqxx_LIBRARIES}")
 message("Libpqxx library dir ${Libpqxx_LIBRARY_DIRS}")
-message("dataaccess include dir ${db_students_data_access_INCLUDE_DIRS}")
-add_subdirectory(gui)
-add_subdirectory(dataaccess)
-add_subdirectory(entities)
 
 include_directories(${PROJECT_SOURCE_DIR}
                     ${CMAKE_CURRENT_BINARY_DIR}
-                    ${Qt5Widgets_INCLUDE_DIRS}
                     ${Qt5Core_INCLUDE_DIRS}
-                    ${Qt5Gui_INCLUDE_DIRS}
                     ${Libpqxx_INCLUDE_DIRS}
                     )
 
 set(HEADERS
-    university_singleton.hpp
-    dbCore.h
+    dbstudents.hpp
 )
 
 set(SOURCES
-    university_singleton.cpp
-    dbCore.cpp
+    dbstudents.cpp
 )
 
 set(FORMS
@@ -57,7 +49,7 @@ qt5_wrap_ui(UIS_HDRS ${FORMS} )
 
 add_library(${PROJECT_NAME} SHARED ${SOURCES} ${HEADERS} ${UIS_HDRS} ${RESOURCES})
 
-target_link_libraries(${PROJECT_NAME} Qt5::Widgets ${Libpqxx_LIBRARIES} db_students_data_access db_gui)
+target_link_libraries(${PROJECT_NAME} Qt5::Widgets ${Libpqxx_LIBRARIES} )
 target_include_directories(${PROJECT_NAME} PUBLIC
                            "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>"
                            "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>")

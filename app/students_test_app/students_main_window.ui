@@ -32,7 +32,17 @@
     <addaction name="separator"/>
     <addaction name="act_Quit"/>
    </widget>
+   <widget class="QMenu" name="menu_University">
+    <property name="title">
+     <string>&amp;University</string>
+    </property>
+    <addaction name="actView_departments"/>
+    <addaction name="actView_students"/>
+    <addaction name="actView_courses"/>
+    <addaction name="actView_enrollments"/>
+   </widget>
    <addaction name="menu_DB"/>
+   <addaction name="menu_University"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="act_Connect">
@@ -51,6 +61,26 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+Q</string>
+   </property>
+  </action>
+  <action name="actView_departments">
+   <property name="text">
+    <string>View departments...</string>
+   </property>
+  </action>
+  <action name="actView_students">
+   <property name="text">
+    <string>View students...</string>
+   </property>
+  </action>
+  <action name="actView_courses">
+   <property name="text">
+    <string>View courses...</string>
+   </property>
+  </action>
+  <action name="actView_enrollments">
+   <property name="text">
+    <string>View enrollments...</string>
    </property>
   </action>
  </widget>

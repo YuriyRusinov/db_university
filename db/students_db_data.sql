@@ -11,11 +11,11 @@ INSERT INTO Departments (department_code, department_name, chair_person, office_
 
 -- Insert Students
 INSERT INTO Students (student_number, first_name, middle_name, last_name, email, date_of_birth, enrollment_date) VALUES 
-('S2023001', 'John', 'Michael', 'Doe', 'john.doe@university.edu', '2000-05-15', '2023-09-01'),
-('S2023002', 'Jane', NULL, 'Smith', 'jane.smith@university.edu', '1999-08-22', '2023-09-01'),
-('S2023003', 'Robert', 'James', 'Johnson', 'robert.johnson@university.edu', '2001-03-10', '2023-09-01'),
-('S2023004', 'Maria', 'Isabel', 'Garcia', 'maria.garcia@university.edu', '2000-11-30', '2023-09-01'),
-('S2023005', 'David', 'William', 'Brown', 'david.brown@university.edu', '2002-02-14', '2023-09-01');
+('2023001', 'John', 'Michael', 'Doe', 'john.doe@university.edu', '2000-05-15', '2023-09-01'),
+('2023002', 'Jane', NULL, 'Smith', 'jane.smith@university.edu', '1999-08-22', '2023-09-01'),
+('2023003', 'Robert', 'James', 'Johnson', 'robert.johnson@university.edu', '2001-03-10', '2023-09-01'),
+('2023004', 'Maria', 'Isabel', 'Garcia', 'maria.garcia@university.edu', '2000-11-30', '2023-09-01'),
+('2023005', 'David', 'William', 'Brown', 'david.brown@university.edu', '2002-02-14', '2023-09-01');
 
 -- Insert Student Profiles
 INSERT INTO Student_Profiles (student_id, phone_number, emergency_contact_name, emergency_contact_phone, address, city, state, postal_code) VALUES 

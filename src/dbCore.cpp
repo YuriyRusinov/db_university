@@ -3,6 +3,7 @@
 #include <university_db.hpp>
 #include <university_pg_db.hpp>
 #include <dbLoginForm.h>
+#include <dbEntitiesForm.h>
 #include "dbCore.h"
 
 bool dbCore::GUIConnect( QWidget* parent, Qt::WindowFlags flags )
@@ -65,4 +66,14 @@ dbCore::~dbCore()
 std::shared_ptr<UniversityDb> dbCore::getDb() const
 {
     return m_Db;
+}
+
+bool dbCore::GUIViewDepartments( QWidget* parent, Qt::WindowFlags flags )
+{
+    QWidget* dbWidget = new dbEntitiesForm( parent, flags );
+    dbWidget->setWindowTitle( tr("Departments") );
+    if( dbWidget == nullptr )
+        return false;
+    emit setWidget( dbWidget );
+    return true;
 }
