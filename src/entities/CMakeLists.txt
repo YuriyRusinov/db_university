@@ -33,10 +33,12 @@ include_directories(${PROJECT_SOURCE_DIR}
 
 set(HEADERS
     dbstudents.hpp
+    dbdepartment.hpp
 )
 
 set(SOURCES
     dbstudents.cpp
+    dbdepartment.cpp
 )
 
 set(FORMS

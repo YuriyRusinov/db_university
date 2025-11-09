@@ -25,7 +25,9 @@ public:
             StudentStatus status = StudentStatus::Unknown
            );
     Student( const Student& S ) = default;
+    Student( Student&& S ) = default;
     Student& operator= ( const Student& S ) = default;
+    Student& operator= ( Student&& S ) = default;
 
     int getId() const { return m_id; };
     void setId(int id) { m_id=id; };

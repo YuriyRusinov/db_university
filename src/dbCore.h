@@ -10,6 +10,7 @@ class QSettings;
 class QAbstractItemView;
 
 class UniversityDb;
+class dbLoader;
 
 using std::unique_ptr;
 using std::shared_ptr;
@@ -35,6 +36,8 @@ private:
     QSettings* m_cvSettings;
     friend class UniversitySingleton;
     std::shared_ptr<UniversityDb> m_Db;
+    std::shared_ptr<dbLoader> m_dbLoader;
+
 private:
     Q_OBJECT
 };

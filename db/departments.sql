@@ -6,7 +6,7 @@ create type db_departments as (
     department_name varchar,
     chair_person varchar,
     location varchar,
-    bidget numeric(12,2),
+    budget numeric(12,2),
     established_date date,
     is_active boolean
 );

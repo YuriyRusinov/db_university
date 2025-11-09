@@ -40,11 +40,13 @@ include_directories(${PROJECT_SOURCE_DIR}
 set(HEADERS
     university_singleton.hpp
     dbCore.h
+    dbLoader.h
 )
 
 set(SOURCES
     university_singleton.cpp
     dbCore.cpp
+    dbLoader.cpp
 )
 
 set(FORMS
@@ -57,7 +59,7 @@ qt5_wrap_ui(UIS_HDRS ${FORMS} )
 
 add_library(${PROJECT_NAME} SHARED ${SOURCES} ${HEADERS} ${UIS_HDRS} ${RESOURCES})
 
-target_link_libraries(${PROJECT_NAME} Qt5::Widgets ${Libpqxx_LIBRARIES} db_students_data_access db_gui)
+target_link_libraries(${PROJECT_NAME} Qt5::Widgets ${Libpqxx_LIBRARIES} db_students_data_access db_gui db_entities)
 target_include_directories(${PROJECT_NAME} PUBLIC
                            "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>"
                            "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>")
