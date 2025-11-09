@@ -5,6 +5,7 @@
 #include <memory>
 
 #include <dbdepartment.hpp>
+#include <dbstudents.hpp>
 
 class UniversityDb;
 
@@ -14,6 +15,7 @@ public:
     ~dbLoader();
 
     std::vector<Department> loadDepartments() const;
+    std::vector<Student> loadStudents() const;
 
 private:
     std::shared_ptr<UniversityDb> m_db;

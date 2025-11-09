@@ -24,6 +24,9 @@ public:
     bool GUIConnect( QWidget* parent=nullptr, Qt::WindowFlags flags=Qt::WindowFlags() );
     void dbDisconnect();
     bool GUIViewDepartments( QWidget* parent=nullptr, Qt::WindowFlags flags=Qt::WindowFlags() );
+    bool GUIViewStudents( QWidget* parent=nullptr, Qt::WindowFlags flags=Qt::WindowFlags() );
+    bool GUIViewCourses( QWidget* parent=nullptr, Qt::WindowFlags flags=Qt::WindowFlags() );
+    bool GUIViewEnrollments( QWidget* parent=nullptr, Qt::WindowFlags flags=Qt::WindowFlags() );
 
     std::shared_ptr<UniversityDb> getDb() const;
 
@@ -41,4 +44,3 @@ private:
 private:
     Q_OBJECT
 };
-

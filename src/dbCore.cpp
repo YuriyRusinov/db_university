@@ -116,3 +116,51 @@ bool dbCore::GUIViewDepartments( QWidget* parent, Qt::WindowFlags flags )
     emit setWidget( dbWidget );
     return true;
 }
+
+bool dbCore::GUIViewStudents( QWidget* parent, Qt::WindowFlags flags ) {
+    dbEntitiesForm* dbWidget = new dbEntitiesForm( entityTypes::eStudents, parent, flags );
+    dbWidget->setWindowTitle( tr("Students") );
+    if( dbWidget == nullptr )
+        return false;
+
+    std::vector<Student> vStudents = m_dbLoader->loadStudents();
+    size_t n = vStudents.size();
+    QStandardItemModel* sModel = new QStandardItemModel(n, 2);
+    QStringList sHeaders;
+    sHeaders << tr("Student ID")
+             << tr("Student full name");
+    for(int i=0; i<2; i++)
+        sModel->setHeaderData(i, Qt::Horizontal, sHeaders[i], Qt::DisplayRole);
+    for(int i=0; i<n; i++) {
+        QModelIndex wIndex = sModel->index(i, 0);
+        sModel->setData(wIndex, vStudents[i].getId(), Qt::DisplayRole);
+        sModel->setData(wIndex, vStudents[i].getId(), Qt::UserRole);
+        wIndex = sModel->index(i, 1);
+        sModel->setData(wIndex, QString::fromStdString(vStudents[i].generateFullName()), Qt::DisplayRole);
+    }
+    dbWidget->setEntitiesModel( sModel );
+
+    emit setWidget( dbWidget );
+    return true;
+}
+
+bool dbCore::GUIViewCourses( QWidget* parent, Qt::WindowFlags flags ) {
+    dbEntitiesForm* dbWidget = new dbEntitiesForm( entityTypes::eCourses, parent, flags );
+    dbWidget->setWindowTitle( tr("Courses") );
+    if( dbWidget == nullptr )
+        return false;
+
+    emit setWidget( dbWidget );
+    return true;
+
+}
+
+bool dbCore::GUIViewEnrollments( QWidget* parent, Qt::WindowFlags flags ) {
+    dbEntitiesForm* dbWidget = new dbEntitiesForm( entityTypes::eEnrollments, parent, flags );
+    dbWidget->setWindowTitle( tr("Enrollments") );
+    if( dbWidget == nullptr )
+        return false;
+
+    emit setWidget( dbWidget );
+    return true;
+}

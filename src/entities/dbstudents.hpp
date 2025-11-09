@@ -28,6 +28,7 @@ public:
     Student( Student&& S ) = default;
     Student& operator= ( const Student& S ) = default;
     Student& operator= ( Student&& S ) = default;
+    ~Student() {};
 
     int getId() const { return m_id; };
     void setId(int id) { m_id=id; };
@@ -43,6 +44,8 @@ public:
 
     std::string getLastName() const { return m_last_name; }
     void setLastName( const std::string& lname ) { m_last_name = lname; }
+
+    std::string generateFullName() const;// { std::string res(m_first_name)
 
     std::string getEmail() const { return m_email; }
     void setEmail( const std::string& email ) { m_email=email; }

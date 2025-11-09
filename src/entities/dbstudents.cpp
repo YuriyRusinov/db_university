@@ -24,3 +24,12 @@ Student::Student(int id,
     m_status( status )
 {
 }
+
+std::string Student::generateFullName() const {
+    std::string res(m_first_name);
+    if( m_middle_name.length() != 0 )
+        res += ' ' + m_middle_name;
+
+    res += ' ' + m_last_name;
+    return res;
+}

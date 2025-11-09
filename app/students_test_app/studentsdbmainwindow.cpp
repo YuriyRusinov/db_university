@@ -76,16 +76,18 @@ void StudentsDbMainWindow::slotDepartments() {
 
 void StudentsDbMainWindow::slotStudents() {
     qDebug() << __PRETTY_FUNCTION__;
+    m_dbC->GUIViewStudents();
 
 }
 
 void StudentsDbMainWindow::slotCourses() {
     qDebug() << __PRETTY_FUNCTION__;
-
+    m_dbC->GUIViewCourses();
 }
 
 void StudentsDbMainWindow::slotEnrollments() {
     qDebug() << __PRETTY_FUNCTION__;
+    m_dbC->GUIViewEnrollments();
 }
 
 void StudentsDbMainWindow::slotActionsEnable( bool isEnable ) {
