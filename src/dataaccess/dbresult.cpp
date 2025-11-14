@@ -46,11 +46,18 @@ bool DbResult::getCellAsBool(int row, int column, bool * ok) const {
         return false;
     }
     stringstream vs(v);
-    bool x;
-    vs >> x;
+    bool x = false;
+    char ch_val;
+    vs >> ch_val;
     if( vs.eof() && ok )
         *ok = true;
     else if( ok )
+        *ok = false;
+    if( ch_val == 't' or ch_val == 'T' )
+        x = true;
+    else if( ch_val == 'f' or ch_val == 'F')
+        x = true;
+    else if( ok != nullptr )
         *ok = false;
     return x;
 }// Возвращает результат sql-запроса в булевом виде

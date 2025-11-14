@@ -65,13 +65,13 @@ public:
     //virtual QImage getCellAsImage( int row, int column ) const = 0; // Возвращает результат запроса в виде изображения QImage
     //virtual cv::Mat getCellAsMatrix( int row, int column ) const = 0; // Result as cv::Mat
     
-    int getCellAsInt(int row, int column, bool * ok = 0) const; // Возвращает результат sql-запроса в виде целого числа
-    long long getCellAsInt64(int row, int column, bool * ok = 0) const; // Возвращает результат sql-запроса в виде целого числа
-    bool getCellAsBool(int row, int column, bool * ok = 0) const; // Возвращает результат sql-запроса в булевом виде
-    std::string getCellAsString(int row, int column, bool * ok = 0) const; // строка
-    double getCellAsDouble(int row, int column, bool * ok = 0) const; // число двойной точности
-    std::vector< std::string > getCellAsStringList(int row, int column, bool * ok = 0) const; // список строк
-    std::string getCellAsDateTime(int row, int column, bool * ok = 0) const; // date and time in ISO format 
+    virtual int getCellAsInt(int row, int column, bool * ok = 0) const; // Возвращает результат sql-запроса в виде целого числа
+    virtual long long getCellAsInt64(int row, int column, bool * ok = 0) const; // Возвращает результат sql-запроса в виде целого числа
+    virtual bool getCellAsBool(int row, int column, bool * ok = 0) const; // Возвращает результат sql-запроса в булевом виде
+    virtual std::string getCellAsString(int row, int column, bool * ok = 0) const; // строка
+    virtual double getCellAsDouble(int row, int column, bool * ok = 0) const; // число двойной точности
+    virtual std::vector< std::string > getCellAsStringList(int row, int column, bool * ok = 0) const; // список строк
+    virtual std::string getCellAsDateTime(int row, int column, bool * ok = 0) const; // date and time in ISO format 
 
     virtual bool isEmpty(int row, int column) const = 0;
     virtual int getRowCount() const = 0;

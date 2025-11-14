@@ -32,6 +32,7 @@ public:
     virtual int getCellLength( int row, int column ) const override;
     
     virtual string getCell(int row, int column) const override; // Возвращает результат sql-запроса в формате QVariant
+    virtual bool getCellAsBool( int row, int column, bool* ok=nullptr) const override;
     virtual std::vector<uint8_t> getCellAsByteArray (int row, int column) const override; // Возвращает результат sql-запроса в виде QByteArray, удобно для полей типа bytea
     //virtual QImage getCellAsImage( int row, int column ) const override;
     //virtual cv::Mat getCellAsMatrix( int row, int column ) const override;

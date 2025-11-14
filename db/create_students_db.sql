@@ -66,7 +66,7 @@ CREATE TABLE Student_Profiles (
     postal_code VARCHAR(20),
     country VARCHAR(50) DEFAULT 'USA',
     medical_notes TEXT,
-    academic_standing VARCHAR(20) DEFAULT 'good' CHECK (academic_standing IN ('good', 'probation', 'warning', 'suspended')),
+    academic_standing VARCHAR(20) DEFAULT 'good' CHECK (academic_standing IN ('good', 'probation', 'warning', 'suspended', 'graduated')),
     financial_balance NUMERIC(8,2) DEFAULT 0,
     created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,

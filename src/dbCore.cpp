@@ -6,6 +6,9 @@
 #include <university_pg_db.hpp>
 #include <dbLoginForm.h>
 #include <dbEntitiesForm.h>
+#include <department.hpp>
+#include <students.hpp>
+#include <courses.hpp>
 
 #include "dbCore.h"
 #include "dbLoader.h"
@@ -96,7 +99,8 @@ bool dbCore::GUIViewDepartments( QWidget* parent, Qt::WindowFlags flags )
         depModel->setHeaderData(i, Qt::Horizontal, headers[i], Qt::DisplayRole);
     for(int i=0; i<ndeps; i++) {
         QModelIndex wIndex = depModel->index(i, 0);
-        depModel->setData(wIndex, QString::number(vDeps[i].getId()), Qt::DisplayRole);
+        depModel->setData(wIndex, vDeps[i].getId(), Qt::DisplayRole);
+        depModel->setData(wIndex, vDeps[i].getId(), Qt::UserRole);
         wIndex = depModel->index(i, 1);
         depModel->setData(wIndex, QString::fromStdString(vDeps[i].getCode()), Qt::DisplayRole);
         wIndex = depModel->index(i, 2);
@@ -150,6 +154,40 @@ bool dbCore::GUIViewCourses( QWidget* parent, Qt::WindowFlags flags ) {
     if( dbWidget == nullptr )
         return false;
 
+    std::vector< Course > vCourses = m_dbLoader->loadCourses();
+    size_t n = vCourses.size();
+    QStandardItemModel* coursesMod = new QStandardItemModel(n, 8);
+    QStringList courseHeaders;
+    courseHeaders << tr("ID Course")
+                  << tr("Code")
+                  << tr("Name")
+                  << tr("Description")
+                  << tr("Department name")
+                  << tr("Professor name")
+                  << tr("Max capacity")
+                  << tr("Is Active");
+    for(int i=0; i<courseHeaders.size(); i++)
+        coursesMod->setHeaderData( i, Qt::Horizontal, courseHeaders[i], Qt::DisplayRole );
+    for(int i=0; i<n; i++) {
+        QModelIndex wIndex = coursesMod->index(i, 0);
+        coursesMod->setData( wIndex, vCourses[i].getId(), Qt::DisplayRole );
+        coursesMod->setData( wIndex, vCourses[i].getId(), Qt::UserRole );
+        wIndex = coursesMod->index(i, 1);
+        coursesMod->setData( wIndex, QString::fromStdString(vCourses[i].getCode()), Qt::DisplayRole );
+        wIndex = coursesMod->index(i, 2);
+        coursesMod->setData( wIndex, QString::fromStdString(vCourses[i].getName()), Qt::DisplayRole );
+        wIndex = coursesMod->index(i, 3);
+        coursesMod->setData( wIndex, QString::fromStdString(vCourses[i].getDesc()), Qt::DisplayRole );
+        wIndex = coursesMod->index(i, 4);
+        coursesMod->setData( wIndex, QString::fromStdString(vCourses[i].getDepartment()->getName()), Qt::DisplayRole );
+        wIndex = coursesMod->index(i, 5);
+        coursesMod->setData( wIndex, QString::fromStdString(vCourses[i].getProfessor()), Qt::DisplayRole );
+        wIndex = coursesMod->index(i, 6);
+        coursesMod->setData( wIndex, vCourses[i].getMaxCapacity(), Qt::DisplayRole );
+        wIndex = coursesMod->index(i, 7);
+        coursesMod->setData( wIndex, (vCourses[i].isActive() ? tr("Active") : tr("not active")), Qt::DisplayRole );
+    }
+    dbWidget->setEntitiesModel( coursesMod );
     emit setWidget( dbWidget );
     return true;
 

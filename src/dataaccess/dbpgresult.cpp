@@ -14,7 +14,6 @@
 #include <pqxx/row>
 #include <pqxx/field>
 #include <pqxx/binarystring>
-//#include <opencv2/imgcodecs.hpp>
 #include "dbpgresult.hpp"
 
 using std::vector;
@@ -223,3 +222,19 @@ void DbPgResult::next() {
 void DbPgResult::prev() {
 }
 
+bool DbPgResult::getCellAsBool( int row, int column, bool* ok) const {
+    if( m_res == nullptr || row >= m_res->size() || column >= m_res->at(row).size() )
+    {
+        if( ok != nullptr )
+            *ok = false;
+        return false;
+    }
+
+    pqxx::row wRow = m_res->at(row);
+    bool val;
+    wRow.at( column ).to( val, false );
+    if( ok )
+        *ok = true;
+    //std::cerr << __PRETTY_FUNCTION__ << ' ' << row << ' ' << column << ' ' << val << std::endl;
+    return val;
+}

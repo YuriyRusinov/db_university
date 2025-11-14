@@ -17,6 +17,7 @@ fi
 /usr/bin/psql -f create_students_db.sql --host=$HOST --port=$PORT --username=$USER $DBNAME
 /usr/bin/psql -f students_db_data.sql --host=$HOST --port=$PORT --username=$USER $DBNAME
 /usr/bin/psql -f students_db_funcs.sql --host=$HOST --port=$PORT --username=$USER $DBNAME
+/usr/bin/psql -f students_profile.sql --host=$HOST --port=$PORT --username=$USER $DBNAME
 /usr/bin/psql -f departments.sql --host=$HOST --port=$PORT --username=$USER $DBNAME
 /usr/bin/psql -f courses.sql --host=$HOST --port=$PORT --username=$USER $DBNAME
 /usr/bin/psql -f enrollments.sql --host=$HOST --port=$PORT --username=$USER $DBNAME

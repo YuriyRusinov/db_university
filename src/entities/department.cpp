@@ -1,4 +1,4 @@
-#include "dbdepartment.hpp"
+#include "department.hpp"
 
 Department::Department( int id,
             std::string department_code,

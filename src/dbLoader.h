@@ -3,11 +3,15 @@
 #include <QObject>
 #include <vector>
 #include <memory>
-
-#include <dbdepartment.hpp>
-#include <dbstudents.hpp>
+#include <optional>
 
 class UniversityDb;
+
+class Department;
+class Student;
+class Course;
+class Enrollments;
+class StudentProfile;
 
 class dbLoader : public QObject {
 public:
@@ -16,6 +20,12 @@ public:
 
     std::vector<Department> loadDepartments() const;
     std::vector<Student> loadStudents() const;
+    std::vector<Course> loadCourses() const;
+
+    std::shared_ptr<Department> loadDepartment( int idDep ) const;
+    std::shared_ptr<Student> loadStudent( int idStudent ) const;
+    std::shared_ptr<Course> loadCourse( int idCourse ) const;
+    std::optional<StudentProfile> loadStudentProfile( int idStudent ) const;
 
 private:
     std::shared_ptr<UniversityDb> m_db;
