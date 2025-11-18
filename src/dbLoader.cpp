@@ -5,6 +5,7 @@
 #include <students.hpp>
 #include <studentsprofile.hpp>
 #include <courses.hpp>
+#include <enrollments.hpp>
 
 #include "dbLoader.h"
 
@@ -189,7 +190,30 @@ std::shared_ptr<Student> dbLoader::loadStudent( int idStudent ) const {
 }
 
 std::shared_ptr<Course> dbLoader::loadCourse( int idCourse ) const {
-    return nullptr;
+    QString sql = QString("select * from get_courses (%1::integer);").arg( idCourse );
+    std::shared_ptr<Course> pCourse( nullptr );
+    if( m_db == nullptr )
+        return pCourse;
+
+    std::shared_ptr< DbResult > res = m_db->execute( sql.toStdString().c_str() );
+
+    if( res == nullptr || res->getRowCount() != 1 ) 
+        return pCourse;
+
+    int i=0;
+    int idDep = res->getCellAsInt(i, 6);
+    pCourse = std::make_shared< Course >( res->getCellAsInt(i, 0), // id
+              res->getCellAsString(i, 2), // code
+              res->getCellAsString(i, 3), // name
+              res->getCellAsString(i, 4), // description
+              res->getCellAsInt(i, 5), // mark
+              loadDepartment( idDep ),  // department
+              res->getCellAsString(i, 9), // professor
+              res->getCellAsInt(i, 10),   // max capacity
+              res->getCellAsBool(i, 11)  // is active
+            );
+
+    return pCourse;
 }
 
 std::optional<StudentProfile> dbLoader::loadStudentProfile( int idStudent ) const {
@@ -233,4 +257,39 @@ std::optional<StudentProfile> dbLoader::loadStudentProfile( int idStudent ) cons
     if( sP.isValid() )
         sProfile = sP;
     return sProfile;
+}
+
+std::vector<Enrollments> dbLoader::loadEnrollments() const {
+    std::vector< Enrollments > vEnrollments;
+    QString sql = QString("select * from get_enrollments (null::integer);");
+    if( m_db == nullptr )
+        return vEnrollments;
+
+    std::shared_ptr< DbResult > res = m_db->execute( sql.toStdString().c_str() );
+
+    if( res == nullptr ) 
+        return vEnrollments;
+    int n = res->getRowCount();
+    for(int i=0; i<n; i++) {
+        Enrollments e( res->getCellAsInt(i, 0),
+                       loadStudent( res->getCellAsInt(i, 2) ),
+                       loadCourse( res->getCellAsInt(i, 3) ),
+                       QDate::fromString(QString::fromStdString(res->getCellAsString(i, 4)), Qt::ISODate),
+                       res->getCellAsDouble(i, 5),
+                       EnrollmentStatus::Unknown,
+                       res->getCellAsString(i, 7),
+                       res->getCellAsInt(i, 8)
+                       );
+        if( res->getCellAsString(i, 6).compare( "active" ) == 0 )
+            e.setStatus( EnrollmentStatus::Active );
+        else if( res->getCellAsString(i, 6).compare( "completed" ) == 0 )
+            e.setStatus( EnrollmentStatus::Completed );
+        else if( res->getCellAsString(i, 6).compare( "withdrawn" ) == 0 )
+            e.setStatus( EnrollmentStatus::Withdrawn );
+        else if( res->getCellAsString(i, 6).compare( "dropped" ) == 0 )
+            e.setStatus( EnrollmentStatus::Dropped );
+        vEnrollments.push_back( e );
+    }
+
+    return vEnrollments;
 }

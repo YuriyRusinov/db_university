@@ -3,7 +3,7 @@ drop type if exists dbstudents cascade;
 create type dbstudents as (
     id_student integer,
     student_uuid uuid,
-    student_number varchar,
+    student_id integer,
     first_name varchar,
     middle_name varchar,
     last_name varchar,

@@ -6,9 +6,11 @@
 #include <university_pg_db.hpp>
 #include <dbLoginForm.h>
 #include <dbEntitiesForm.h>
+
 #include <department.hpp>
 #include <students.hpp>
 #include <courses.hpp>
+#include <enrollments.hpp>
 
 #include "dbCore.h"
 #include "dbLoader.h"
@@ -198,7 +200,29 @@ bool dbCore::GUIViewEnrollments( QWidget* parent, Qt::WindowFlags flags ) {
     dbWidget->setWindowTitle( tr("Enrollments") );
     if( dbWidget == nullptr )
         return false;
+    std::vector< Enrollments > vEnrollments = m_dbLoader->loadEnrollments();
+    int n = vEnrollments.size();
+    QStandardItemModel* eModel = new QStandardItemModel(n, 4);
+    QStringList eHeaders;
+    eHeaders << tr("Enrollment ID")
+        << tr("Student")
+        << tr("Course")
+        << tr("Semester");
+    for(int i=0; i<eHeaders.size(); i++)
+        eModel->setHeaderData( i, Qt::Horizontal, eHeaders[i], Qt::DisplayRole );
 
+    for(int i=0; i<n; i++) {
+        QModelIndex wIndex = eModel->index(i, 0);
+        eModel->setData( wIndex, vEnrollments[i].getId(), Qt::DisplayRole );
+        eModel->setData( wIndex, vEnrollments[i].getId(), Qt::UserRole );
+        wIndex = eModel->index(i, 1);
+        eModel->setData( wIndex, QString::fromStdString(vEnrollments[i].getStudent()->generateFullName()), Qt::DisplayRole );
+        wIndex = eModel->index(i, 2);
+        eModel->setData( wIndex, QString::fromStdString(vEnrollments[i].getCourse()->getName()), Qt::DisplayRole );
+        wIndex = eModel->index(i, 3);
+        eModel->setData( wIndex, QString::fromStdString(vEnrollments[i].getSemester()), Qt::DisplayRole );
+    }
+    dbWidget->setEntitiesModel( eModel );
     emit setWidget( dbWidget );
     return true;
 }

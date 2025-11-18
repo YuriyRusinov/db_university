@@ -21,6 +21,7 @@ public:
     std::vector<Department> loadDepartments() const;
     std::vector<Student> loadStudents() const;
     std::vector<Course> loadCourses() const;
+    std::vector<Enrollments> loadEnrollments() const;
 
     std::shared_ptr<Department> loadDepartment( int idDep ) const;
     std::shared_ptr<Student> loadStudent( int idStudent ) const;
