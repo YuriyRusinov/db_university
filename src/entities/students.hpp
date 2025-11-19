@@ -17,7 +17,7 @@ enum class StudentStatus {
 class Student {
 public:
     Student(int id=-1,
-            long long sNumber=-1,
+            std::string sNumber=std::string(),
             std::string first_name=std::string(),
             std::string middle_name=std::string(),
             std::string last_name=std::string(),
@@ -37,8 +37,8 @@ public:
     int getId() const { return m_id; };
     void setId(int id) { m_id = std::move(id); };
 
-    long long getStudentNumber() const { return m_student_number; }
-    void setStudentNumber( long long sn ) { m_student_number = std::move(sn); }
+    std::string getStudentNumber() const { return m_student_number; }
+    void setStudentNumber( std::string sn ) { m_student_number = std::move(sn); }
 
     std::string getFirstName() const { return m_first_name; }
     void setFirstName( const std::string& fname ) { m_first_name = std::move(fname); }
@@ -71,7 +71,7 @@ public:
 
 private:
     int m_id;
-    long long m_student_number;
+    std::string m_student_number;
     std::string m_first_name;
     std::string m_middle_name;
     std::string m_last_name;

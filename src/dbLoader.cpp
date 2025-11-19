@@ -63,7 +63,7 @@ std::vector<Student> dbLoader::loadStudents() const {
     vStudents.resize(n);
     for(int i=0; i<n; i++) {
         Student s( res->getCellAsInt(i, 0),
-                   res->getCellAsInt64(i, 2),
+                   res->getCellAsString(i, 2),
                    res->getCellAsString(i, 3),
                    res->getCellAsString(i, 4),
                    res->getCellAsString(i, 5),
@@ -81,7 +81,8 @@ std::vector<Student> dbLoader::loadStudents() const {
         else if( !res->getCellAsString(i, 10).compare("withdrawn") )
             s.setStatus( StudentStatus::Withdrawn );
         std::optional<StudentProfile> sP = loadStudentProfile( s.getId() );
-        s.setStudentProfile( sP.value() );
+        if( sP.has_value() )
+            s.setStudentProfile( sP.value() );
         vStudents[i] = std::move( s );
         qDebug() << __PRETTY_FUNCTION__ << sP.has_value();
     }
@@ -166,7 +167,7 @@ std::shared_ptr<Student> dbLoader::loadStudent( int idStudent ) const {
     }
     int i=0;
     pStudent = std::make_shared<Student>( res->getCellAsInt(i, 0),
-               res->getCellAsInt64(i, 2),
+               res->getCellAsString(i, 2),
                res->getCellAsString(i, 3),
                res->getCellAsString(i, 4),
                res->getCellAsString(i, 5),

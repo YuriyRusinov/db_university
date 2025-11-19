@@ -32,6 +32,15 @@ public:
 
     static std::unique_ptr<dbCore> create( QObject* parent=nullptr );
 
+private:
+    void initStudentsModel( QAbstractItemModel* model );
+    void initDepModel( QAbstractItemModel* model );
+    void initCourseModel( QAbstractItemModel* model );
+    void initEnrollModel( QAbstractItemModel* model );
+
+private slots:
+    void refreshModel(int eType, QAbstractItemModel* mod );
+
 signals:
     void setWidget( QWidget* w );
 

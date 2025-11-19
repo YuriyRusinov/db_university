@@ -2,7 +2,7 @@
 #include "students.hpp"
 
 Student::Student(int id,
-            long long sNumber,
+            std::string sNumber,
             std::string first_name,
             std::string middle_name,
             std::string last_name,

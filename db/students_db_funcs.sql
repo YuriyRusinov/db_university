@@ -3,7 +3,7 @@ drop type if exists dbstudents cascade;
 create type dbstudents as (
     id_student integer,
     student_uuid uuid,
-    student_id integer,
+    student_number varchar,
     first_name varchar,
     middle_name varchar,
     last_name varchar,
@@ -49,25 +49,22 @@ end
 $BODY$
 language 'plpgsql';
 
-create or replace function insert_student(varchar, varchar, varchar, varchar, date, date, date, varchar) returns integer as
+create or replace function insert_student(m_student_number varchar, m_first_name varchar, m_middle_name varchar, m_last_name varchar, m_email varchar, m_birth_date date, m_enroll_date date, m_graduate_date date, m_status varchar) returns integer as
 $BODY$
 declare
-    m_first_name alias for $1;
-    m_middle_name alias for $2;
-    m_last_name alias for $3;
-    m_email alias for $4;
-    m_birth_date alias for $5;
-    m_enroll_date alias for $6;
-    m_graduate_date alias for $7;
-    m_status alias for $8;
-
     query varchar;
     id_student integer;
     student_uuid uuid;
     id_student_profile integer;
 begin
     select into id_student nextval('students_id_seq'::regclass);
-    query := E'insert into students(id, first_name, middle_name, last_name, email, date_of_birth, enrollment_date, graduation_date, status) values (' || id_student || E', ';
+    query := E'insert into students(id, student_number, first_name, middle_name, last_name, email, date_of_birth, enrollment_date, graduation_date, status) values (' || id_student || E', \'';
+    if( m_student_number is null ) then
+        query := query || E'null::varchar';
+    else
+        query := query || m_student_number;
+    end if;
+    query := query || E'\', ';
     if( m_first_name is null ) then
         query := query || E'null::varchar';
     else
@@ -133,7 +130,7 @@ end
 $BODY$
 language 'plpgsql';
 
-create or replace function update_student(p_id_student integer, m_first_name varchar, m_middle_name varchar,  m_last_name varchar, m_email varchar, m_birth_date date, m_enroll_date date, m_graduate_date date, m_status varchar default 'active') returns integer as
+create or replace function update_student(p_id_student integer, m_student_number varchar,m_first_name varchar, m_middle_name varchar,  m_last_name varchar, m_email varchar, m_birth_date date, m_enroll_date date, m_graduate_date date, m_status varchar default 'active') returns integer as
 $BODY$
 declare
 
@@ -142,7 +139,13 @@ declare
     student_uuid uuid;
     id_student_profile integer;
 begin
-    query := E'update students set first_name = ';----    , ) values (' || id_student || E', ';
+    query := E'update students set student_number = ';----    , ) values (' || id_student || E', ';
+    if( m_student_number is null ) then
+        query := query || E'null::varchar';
+    else
+        query := query || E'\'' || m_m_student_number || E'\'';
+    end if;
+    query := query || E', first_name =';
     if( m_first_name is null ) then
         query := query || E'null::varchar';
     else
@@ -221,11 +224,12 @@ declare
 
     query varchar;
     cnt integer;
+    id_sp integer;
 begin
-    select into cnt count(*) from student_profiles sp where sp.student_id = id_student;
-    if( cnt <> 1) then
-        raise warning 'cannot find student % in list', id_student;
-        return -1;
+    select into id_sp sp.id from student_profiles sp where sp.student_id = id_student;
+    if( id_sp is null ) then
+        select into id_sp nextval('student_profiles_id_seq');
+        insert into student_profiles(id, student_id) values (id_sp, id_student);
     end if;
 
     query := E'update student_profiles set phone_number = ';
@@ -310,8 +314,12 @@ create or replace function delete_student(integer) returns integer as
 $BODY$
 declare
     id_student alias for $1;
+    id_sp integer;
 begin
-    delete from student_profiles where student_id = id_student;
+    select into id_sp sp.id from student_profiles sp where sp.student_id = id_student;
+    if( id_sp is not null ) then
+        delete from student_profiles where student_id = id_student;
+    end if;
     delete from students where id = id_student;
 
     return id_student;
