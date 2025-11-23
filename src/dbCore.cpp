@@ -6,6 +6,7 @@
 #include <university_pg_db.hpp>
 #include <dbLoginForm.h>
 #include <dbEntitiesForm.h>
+#include <departmentwidget.h>
 
 #include <department.hpp>
 #include <students.hpp>
@@ -14,6 +15,7 @@
 
 #include "dbCore.h"
 #include "dbLoader.h"
+#include "dbWriter.h"
 
 bool dbCore::GUIConnect( QWidget* parent, Qt::WindowFlags flags )
 {
@@ -63,6 +65,7 @@ dbCore::dbCore( QObject* parent )
     : QObject( parent ),
     m_Db( std::make_shared<UniversityPgDb>() ),
     m_dbLoader( std::make_shared<dbLoader>(m_Db) ),
+    m_dbWriter( std::make_shared<dbWriter>(m_Db) ),
     m_cvSettings( new QSettings(QSettings::NativeFormat, QSettings::UserScope, tr("UniversityStudents")) )
 {
 }
@@ -87,7 +90,8 @@ bool dbCore::GUIViewDepartments( QWidget* parent, Qt::WindowFlags flags )
     QStandardItemModel * depModel = new QStandardItemModel;//(ndeps, 8);
     initDepModel( depModel );
     dbWidget->setEntitiesModel( depModel );
-    connect( dbWidget, &dbEntitiesForm::refreshModel, this, &dbCore::refreshModel );
+
+    connectEntitiesForm( dbWidget );
     emit setWidget( dbWidget );
     return true;
 }
@@ -102,7 +106,10 @@ bool dbCore::GUIViewStudents( QWidget* parent, Qt::WindowFlags flags ) {
     initStudentsModel( sModel );
     dbWidget->setEntitiesModel( sModel );
 
+    connectEntitiesForm( dbWidget );
     connect( dbWidget, &dbEntitiesForm::refreshModel, this, &dbCore::refreshModel );
+    connect( dbWidget, &dbEntitiesForm::addEntityToDB, this, &dbCore::addEntity );
+    connect( dbWidget, &dbEntitiesForm::updateEntityInDB, this, &dbCore::editEntity );
     emit setWidget( dbWidget );
     return true;
 }
@@ -117,6 +124,8 @@ bool dbCore::GUIViewCourses( QWidget* parent, Qt::WindowFlags flags ) {
     initCourseModel( coursesMod );
     dbWidget->setEntitiesModel( coursesMod );
     connect( dbWidget, &dbEntitiesForm::refreshModel, this, &dbCore::refreshModel );
+    connect( dbWidget, &dbEntitiesForm::addEntityToDB, this, &dbCore::addEntity );
+    connect( dbWidget, &dbEntitiesForm::updateEntityInDB, this, &dbCore::editEntity );
     emit setWidget( dbWidget );
     return true;
 }
@@ -129,7 +138,6 @@ bool dbCore::GUIViewEnrollments( QWidget* parent, Qt::WindowFlags flags ) {
     QStandardItemModel* eModel = new QStandardItemModel;//(n, 4);
     initEnrollModel( eModel );
     dbWidget->setEntitiesModel( eModel );
-    connect( dbWidget, &dbEntitiesForm::refreshModel, this, &dbCore::refreshModel );
     emit setWidget( dbWidget );
     return true;
 }
@@ -293,4 +301,77 @@ void dbCore::initEnrollModel( QAbstractItemModel* model ) {
         wIndex = model->index(i, 3);
         model->setData( wIndex, QString::fromStdString(vEnrollments[i].getSemester()), Qt::DisplayRole );
     }
+}
+
+void dbCore::addEntity( int eType, QAbstractItemModel* mod ) {
+    if( mod == nullptr )
+        return;
+
+    switch( eType ) {
+        case entityTypes::eStudents: break;
+        case entityTypes::eDepartments: {
+                                            std::shared_ptr< Department > pDep = std::make_shared< Department > ();
+                                            DepartmentWidget* dW = new DepartmentWidget( pDep );
+                                            connect( dW, &DepartmentWidget::saveDepartmentToDb, m_dbWriter.get(), &dbWriter::saveDepartment );
+                                            emit setWidget( dW );
+                                            break;
+                                        }
+        case entityTypes::eCourses: initCourseModel( mod ); break;
+        case entityTypes::eEnrollments: initEnrollModel( mod ); break;
+        default: break;
+    }
+    return;
+}
+
+void dbCore::editEntity( int eType, const QModelIndex& wIndex, QAbstractItemModel* mod ) {
+    if( mod == nullptr || !wIndex.isValid() )
+        return;
+
+    bool ok = false;
+    int id = wIndex.data( Qt::UserRole ).toInt( &ok );
+    if( !ok )
+        return;
+    switch( eType ) {
+        case entityTypes::eStudents: break;
+        case entityTypes::eDepartments: {
+                                            std::shared_ptr< Department > pDep = m_dbLoader->loadDepartment( id );
+                                            DepartmentWidget* dW = new DepartmentWidget( pDep );
+                                            connect( dW, &DepartmentWidget::saveDepartmentToDb, m_dbWriter.get(), &dbWriter::saveDepartment );
+                                            emit setWidget( dW );
+                                            break;
+                                        }
+        case entityTypes::eCourses: break;
+        case entityTypes::eEnrollments: break;
+        default: break;
+    }
+    return;
+}
+
+void dbCore::delEntity( int eType, const QModelIndex& wIndex, QAbstractItemModel* mod ) {
+    if( mod == nullptr || !wIndex.isValid() )
+        return;
+
+    switch( eType ) {
+        case entityTypes::eStudents: break;
+        case entityTypes::eDepartments: {
+                                            int idDep = wIndex.data( Qt::UserRole ).toInt();
+                                            m_dbWriter->deleteDepartment( idDep );
+                                            mod->removeRows( wIndex.row(), 1 );
+                                            break;
+                                        }
+        case  entityTypes::eCourses: break;
+        case entityTypes::eEnrollments: break;
+        default: break;
+    }
+}
+
+void dbCore::connectEntitiesForm( QWidget* pForm ) {
+    if( qobject_cast<dbEntitiesForm*>(pForm) == nullptr )
+        return;
+
+    dbEntitiesForm* dbWidget = qobject_cast<dbEntitiesForm*>(pForm);
+    connect( dbWidget, &dbEntitiesForm::refreshModel, this, &dbCore::refreshModel );
+    connect( dbWidget, &dbEntitiesForm::addEntityToDB, this, &dbCore::addEntity );
+    connect( dbWidget, &dbEntitiesForm::updateEntityInDB, this, &dbCore::editEntity );
+    connect( dbWidget, &dbEntitiesForm::delEntityFromDB, this, &dbCore::delEntity );
 }

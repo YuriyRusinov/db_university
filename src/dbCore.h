@@ -11,6 +11,7 @@ class QAbstractItemView;
 
 class UniversityDb;
 class dbLoader;
+class dbWriter;
 
 using std::unique_ptr;
 using std::shared_ptr;
@@ -38,8 +39,13 @@ private:
     void initCourseModel( QAbstractItemModel* model );
     void initEnrollModel( QAbstractItemModel* model );
 
+    void connectEntitiesForm( QWidget* pForm );
+
 private slots:
     void refreshModel(int eType, QAbstractItemModel* mod );
+    void addEntity( int eType, QAbstractItemModel* mod );
+    void editEntity( int eType, const QModelIndex& wIndex, QAbstractItemModel* mod );
+    void delEntity( int eType, const QModelIndex& wIndex, QAbstractItemModel* mod );
 
 signals:
     void setWidget( QWidget* w );
@@ -49,6 +55,7 @@ private:
     friend class UniversitySingleton;
     std::shared_ptr<UniversityDb> m_Db;
     std::shared_ptr<dbLoader> m_dbLoader;
+    std::shared_ptr<dbWriter> m_dbWriter;
 
 private:
     Q_OBJECT

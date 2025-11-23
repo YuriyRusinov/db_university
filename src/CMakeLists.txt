@@ -41,12 +41,14 @@ set(HEADERS
     university_singleton.hpp
     dbCore.h
     dbLoader.h
+    dbWriter.h
 )
 
 set(SOURCES
     university_singleton.cpp
     dbCore.cpp
     dbLoader.cpp
+    dbWriter.cpp
 )
 
 set(FORMS

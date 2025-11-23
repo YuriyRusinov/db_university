@@ -33,16 +33,19 @@ set(CMAKE_BUILD_TYPE Debug)
 set(HEADERS
     dbLoginForm.h
     dbEntitiesForm.h
+    departmentwidget.h
 )
 
 set(SOURCES
     dbLoginForm.cpp
     dbEntitiesForm.cpp
+    departmentwidget.cpp
 )
 
 set(FORMS
     db_login_form.ui
     db_entities_form.ui
+    department_widget.ui
 )
 
 set(RESOURCES
@@ -50,7 +53,8 @@ set(RESOURCES
 
 add_library(${PROJECT_NAME} SHARED ${SOURCES} ${HEADERS} ${RESOURCES}  )
 
-target_link_libraries(${PROJECT_NAME} Qt5::Widgets) 
+target_link_libraries(${PROJECT_NAME} Qt5::Widgets db_entities) 
+
 target_include_directories(${PROJECT_NAME} PUBLIC
                            "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>"
                            "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>")
