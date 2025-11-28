@@ -117,10 +117,10 @@ begin
     raise warning '%', query;
     execute query;
 
-    select into id_student_profile nextval('student_profiles_id_seq'::regclass);
-    raise warning 'id_student_profile %', id_student_profile;
+    --select into id_student_profile nextval('student_profiles_id_seq'::regclass);
+    --raise warning 'id_student_profile %', id_student_profile;
 
-    insert into student_profiles(id, student_id) values( id_student_profile, id_student );
+    --insert into student_profiles(id, student_id) values( id_student_profile, id_student );
 
     return id_student;
     exception when others then
@@ -130,7 +130,7 @@ end
 $BODY$
 language 'plpgsql';
 
-create or replace function update_student(p_id_student integer, m_student_number varchar,m_first_name varchar, m_middle_name varchar,  m_last_name varchar, m_email varchar, m_birth_date date, m_enroll_date date, m_graduate_date date, m_status varchar default 'active') returns integer as
+create or replace function update_student(p_id_student integer, m_student_number varchar, m_first_name varchar, m_middle_name varchar,  m_last_name varchar, m_email varchar, m_birth_date date, m_enroll_date date, m_graduate_date date, m_status varchar default 'active') returns integer as
 $BODY$
 declare
 
@@ -138,13 +138,20 @@ declare
     id_student integer;
     student_uuid uuid;
     id_student_profile integer;
+    cnt integer;
 begin
-    query := E'update students set student_number = ';----    , ) values (' || id_student || E', ';
+    select into cnt count(s.student_number) from students s where s.student_number=m_student_number and s.id <> p_id_student;
+    if( cnt > 0 ) then
+        raise warning 'student with % already present', m_student_number;
+        return -1;
+    end if;
+    query := E'update students set student_number = ';
     if( m_student_number is null ) then
         query := query || E'null::varchar';
     else
-        query := query || E'\'' || m_m_student_number || E'\'';
+        query := query || E'\'' || m_student_number || E'\'';
     end if;
+    raise warning '%', query;
     query := query || E', first_name =';
     if( m_first_name is null ) then
         query := query || E'null::varchar';
@@ -321,6 +328,21 @@ begin
         delete from student_profiles where student_id = id_student;
     end if;
     delete from students where id = id_student;
+
+    return id_student;
+end
+$BODY$
+language 'plpgsql';
+
+create or replace function clear_student_profile( id_student integer ) returns integer as
+$BODY$
+declare
+    id_sp integer;
+begin
+    select into id_sp sp.id from student_profiles sp where sp.student_id = id_student;
+    if( id_sp is not null ) then
+        delete from student_profiles where student_id = id_student;
+    end if;
 
     return id_student;
 end

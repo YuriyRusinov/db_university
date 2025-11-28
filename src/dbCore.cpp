@@ -7,6 +7,7 @@
 #include <dbLoginForm.h>
 #include <dbEntitiesForm.h>
 #include <departmentwidget.h>
+#include <studentwidget.h>
 
 #include <department.hpp>
 #include <students.hpp>
@@ -107,9 +108,6 @@ bool dbCore::GUIViewStudents( QWidget* parent, Qt::WindowFlags flags ) {
     dbWidget->setEntitiesModel( sModel );
 
     connectEntitiesForm( dbWidget );
-    connect( dbWidget, &dbEntitiesForm::refreshModel, this, &dbCore::refreshModel );
-    connect( dbWidget, &dbEntitiesForm::addEntityToDB, this, &dbCore::addEntity );
-    connect( dbWidget, &dbEntitiesForm::updateEntityInDB, this, &dbCore::editEntity );
     emit setWidget( dbWidget );
     return true;
 }
@@ -123,9 +121,7 @@ bool dbCore::GUIViewCourses( QWidget* parent, Qt::WindowFlags flags ) {
     QStandardItemModel* coursesMod = new QStandardItemModel(0, 8);
     initCourseModel( coursesMod );
     dbWidget->setEntitiesModel( coursesMod );
-    connect( dbWidget, &dbEntitiesForm::refreshModel, this, &dbCore::refreshModel );
-    connect( dbWidget, &dbEntitiesForm::addEntityToDB, this, &dbCore::addEntity );
-    connect( dbWidget, &dbEntitiesForm::updateEntityInDB, this, &dbCore::editEntity );
+    connectEntitiesForm( dbWidget );
     emit setWidget( dbWidget );
     return true;
 }
@@ -308,7 +304,13 @@ void dbCore::addEntity( int eType, QAbstractItemModel* mod ) {
         return;
 
     switch( eType ) {
-        case entityTypes::eStudents: break;
+        case entityTypes::eStudents: {
+                                         std::shared_ptr< Student > pStudent = std::make_shared< Student >();
+                                         StudentWidget* stW = new StudentWidget( pStudent );
+                                         connect( stW, &StudentWidget::saveStudentToDb, m_dbWriter.get(), &dbWriter::saveStudent );
+                                         emit setWidget( stW );
+                                         break;
+                                     }
         case entityTypes::eDepartments: {
                                             std::shared_ptr< Department > pDep = std::make_shared< Department > ();
                                             DepartmentWidget* dW = new DepartmentWidget( pDep );
@@ -316,8 +318,12 @@ void dbCore::addEntity( int eType, QAbstractItemModel* mod ) {
                                             emit setWidget( dW );
                                             break;
                                         }
-        case entityTypes::eCourses: initCourseModel( mod ); break;
-        case entityTypes::eEnrollments: initEnrollModel( mod ); break;
+        case entityTypes::eCourses: { 
+                                        break;
+                                    }
+        case entityTypes::eEnrollments: {
+                                            break;
+                                        }
         default: break;
     }
     return;
@@ -332,7 +338,13 @@ void dbCore::editEntity( int eType, const QModelIndex& wIndex, QAbstractItemMode
     if( !ok )
         return;
     switch( eType ) {
-        case entityTypes::eStudents: break;
+        case entityTypes::eStudents: {
+                                         std::shared_ptr< Student > pStudent = m_dbLoader->loadStudent( id );
+                                         StudentWidget* stW = new StudentWidget( pStudent );
+                                         connect( stW, &StudentWidget::saveStudentToDb, m_dbWriter.get(), &dbWriter::saveStudent );
+                                         emit setWidget( stW );
+                                         break;
+                                     }
         case entityTypes::eDepartments: {
                                             std::shared_ptr< Department > pDep = m_dbLoader->loadDepartment( id );
                                             DepartmentWidget* dW = new DepartmentWidget( pDep );
@@ -352,7 +364,12 @@ void dbCore::delEntity( int eType, const QModelIndex& wIndex, QAbstractItemModel
         return;
 
     switch( eType ) {
-        case entityTypes::eStudents: break;
+        case entityTypes::eStudents: {
+                                         int idStudent = wIndex.data( Qt::UserRole ).toInt();
+                                         m_dbWriter->deleteStudent( idStudent );
+                                         mod->removeRows( wIndex.row(), 1 );
+                                         break;
+                                     }
         case entityTypes::eDepartments: {
                                             int idDep = wIndex.data( Qt::UserRole ).toInt();
                                             m_dbWriter->deleteDepartment( idDep );

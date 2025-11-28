@@ -34,18 +34,21 @@ set(HEADERS
     dbLoginForm.h
     dbEntitiesForm.h
     departmentwidget.h
+    studentwidget.h
 )
 
 set(SOURCES
     dbLoginForm.cpp
     dbEntitiesForm.cpp
     departmentwidget.cpp
+    studentwidget.cpp
 )
 
 set(FORMS
     db_login_form.ui
     db_entities_form.ui
     department_widget.ui
+    students_widget.ui
 )
 
 set(RESOURCES

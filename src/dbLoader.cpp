@@ -186,7 +186,8 @@ std::shared_ptr<Student> dbLoader::loadStudent( int idStudent ) const {
         pStudent->setStatus( StudentStatus::Withdrawn );
 
     std::optional<StudentProfile> sP = loadStudentProfile( pStudent->getId() );
-    pStudent->setStudentProfile( sP.value() );
+    if( sP.has_value() )
+        pStudent->setStudentProfile( sP.value() );
     return pStudent;
 }
 
@@ -240,21 +241,22 @@ std::optional<StudentProfile> dbLoader::loadStudentProfile( int idStudent ) cons
     else if( aStanding.compare("graduated") == 0 )
         aStudentSt = AcademicStanding::Graduated;
 
+    std::optional<std::string> optCountry (res->getCellAsString(i, 12));
     StudentProfile sP = StudentProfile( res->getCellAsInt(i, 0), // id
                                idStudent,
                                aStudentSt,
                                res->getCellAsDouble(i, 3), // finance
-                               (res->getCellAsString(i, 5).empty() ? std::nullopt : std::optional<std::string>(res->getCellAsString(i, 5))), // phone
-                               (res->getCellAsString(i, 6).empty() ? std::nullopt : std::optional<std::string>(res->getCellAsString(i, 6))), // emergency contact
-                               (res->getCellAsString(i, 7).empty() ? std::nullopt : std::optional<std::string>((res->getCellAsString(i, 7))), // emergency contact phone
-                               (res->getCellAsString(i, 8).empty() ? std::nullopt : std::optional<std::string>((res->getCellAsString(i, 8))), // address
-                               (res->getCellAsString(i, 9).empty() ? std::nullopt : std::optional<std::string>((res->getCellAsString(i, 9))), // city
-                               (res->getCellAsString(i, 10).empty() ? std::nullopt : std::optional<std::string>((res->getCellAsString(i, 10))), // state
-                               (res->getCellAsString(i, 11).empty() ? std::nullopt : std::optional<std::string>((res->getCellAsString(i, 11))), // postal_code
-                               (res->getCellAsString(i, 12).empty() ? std::nullopt : std::optional<std::string>((res->getCellAsString(i, 12))), // country
-                               (res->getCellAsString(i, 13).empty() ? std::nullopt : std::optional<std::string>((res->getCellAsString(i, 13))) // medical notes
-            ))))))));
-    qDebug() << __PRETTY_FUNCTION__ << sql << ' ' << (int)aStudentSt << sP.isValid();
+                               res->getCellAsString(i, 5), // phone
+                               res->getCellAsString(i, 6), // emergency contact
+                               res->getCellAsString(i, 7), // emergency contact phone
+                               res->getCellAsString(i, 8), // address
+                               res->getCellAsString(i, 9), // city
+                               res->getCellAsString(i, 10), // state
+                               res->getCellAsString(i, 11), // postal_code
+                               res->getCellAsString(i, 12), // country
+                               res->getCellAsString(i, 13) // medical notes
+            );
+    qDebug() << __PRETTY_FUNCTION__ << sql << ' ' << (int)aStudentSt << sP.isValid() << QString::fromStdString(res->getCellAsString(i, 12)) << optCountry.value().c_str() << QString::fromStdString(sP.getCountry());
     if( sP.isValid() )
         sProfile = sP;
     return sProfile;

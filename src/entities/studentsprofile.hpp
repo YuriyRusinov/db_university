@@ -18,15 +18,15 @@ public:
                    int student_id = -1,
                    AcademicStanding academic_standing = AcademicStanding::Unknown,
                    double financialBalance = 0.0,
-                   std::optional<std::string> phone_number = std::nullopt,
-                   std::optional<std::string> emergency_contact_name = std::nullopt,
-                   std::optional<std::string> emergency_contact_phone = std::nullopt,
-                   std::optional<std::string> address = std::nullopt,
-                   std::optional<std::string> city = std::nullopt,
-                   std::optional<std::string> state = std::nullopt,
-                   std::optional<std::string> postal_code = std::nullopt,
-                   std::optional<std::string> country = std::nullopt,
-                   std::optional<std::string> medical_notes = std::nullopt
+                   const std::string& phone_number = std::string(),
+                   const std::string& emergency_contact_name = std::string(),
+                   const std::string& emergency_contact_phone = std::string(),
+                   const std::string& address = std::string(),
+                   const std::string& city = std::string(),
+                   const std::string& state = std::string(),
+                   const std::string& postal_code = std::string(),
+                   const std::string& country = std::string(),
+                   const std::string& medical_notes = std::string()
             );
     StudentProfile( const StudentProfile& SP ) = default;
     StudentProfile( StudentProfile&& SP ) = default;
@@ -74,6 +74,7 @@ public:
     void setMedNotes( const std::string& mnotes ) { if( mnotes.empty() ) m_medical_notes = std::nullopt; else m_medical_notes = mnotes; }
 
     bool isValid() const { return (m_id > 0 && m_student_id > 0); }
+    std::string getFullAcademicStanding() const;
 
 private:
     int m_id;

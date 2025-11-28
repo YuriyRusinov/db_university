@@ -20,13 +20,20 @@ public:
 
 public slots:
     int saveDepartment( std::shared_ptr< Department > pDepartment );
+    int saveStudent( std::shared_ptr< Student > pStudent );
 
-private:
+public:
     int insertDepartment( std::shared_ptr< Department > pDepartment );
     int updateDepartment( std::shared_ptr< Department > pDepartment );
     int deleteDepartment( int idDep );
 
-    friend class dbCore;
+    int insertStudent( std::shared_ptr< Student > pStudent );
+    int updateStudent( std::shared_ptr< Student > pStudent );
+    int deleteStudent( int idStudent );
+
+    int updateStudentProfile( std::shared_ptr< StudentProfile > sP );
+    int clearStudentProfile( int idStudent );
+    int saveStudentProfile( std::shared_ptr< Student > pStudent );
 
 private:
     std::shared_ptr<UniversityDb> m_db;
