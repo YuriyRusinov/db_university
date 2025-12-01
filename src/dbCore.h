@@ -13,6 +13,8 @@ class UniversityDb;
 class dbLoader;
 class dbWriter;
 
+class Course;
+
 using std::unique_ptr;
 using std::shared_ptr;
 
@@ -46,6 +48,8 @@ private slots:
     void addEntity( int eType, QAbstractItemModel* mod );
     void editEntity( int eType, const QModelIndex& wIndex, QAbstractItemModel* mod );
     void delEntity( int eType, const QModelIndex& wIndex, QAbstractItemModel* mod );
+
+    void loadDepartmentsToCourse( std::shared_ptr< Course > pCourse );
 
 signals:
     void setWidget( QWidget* w );

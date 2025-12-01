@@ -35,6 +35,9 @@ public:
     const std::string& getDesc() const { return m_description; }
     void setDesc( const std::string& desc ) { m_description = desc; }
 
+    int getCreditMark() const { return m_mark; }
+    void setCreditMark( int val ) { m_mark = val; }
+
     std::shared_ptr< Department > getDepartment() const { return m_department; }
     void setDepartment( std::shared_ptr< Department > dep ) { m_department = dep; }
 

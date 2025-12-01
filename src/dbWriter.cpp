@@ -3,6 +3,7 @@
 #include <dbresult.hpp>
 #include <department.hpp>
 #include <students.hpp>
+#include <courses.hpp>
 #include "dbWriter.h"
 
 dbWriter::dbWriter( std::shared_ptr<UniversityDb> pdb, QObject* parent )
@@ -44,7 +45,7 @@ int dbWriter::insertDepartment( std::shared_ptr< Department > pDepartment )
 int dbWriter::updateDepartment( std::shared_ptr< Department > pDepartment ) {
     QString sql = QString("select update_department( %1, %2, %3, %4, %5, %6, %7, %8 );")
                         .arg( pDepartment->getId() )
-                        .arg( pDepartment->getCode().empty() ? QString("null::varchar") : QString("'")+QString::fromStdString(pDepartment->getCode())+QString("'")  )
+                       .arg( pDepartment->getCode().empty() ? QString("null::varchar") : QString("'")+QString::fromStdString(pDepartment->getCode())+QString("'")  )
                         .arg( pDepartment->getName().empty() ? QString("null::varchar") : QString("'")+QString::fromStdString(pDepartment->getName())+QString("'") )
                         .arg( pDepartment->getChairPerson().empty() ? QString("null::varchar") : QString("'")+QString::fromStdString( pDepartment->getChairPerson() )+QString("'") )
                         .arg( pDepartment->getOfficeLocation().empty() ? QString("null::varchar") : QString("'")+QString::fromStdString( pDepartment->getOfficeLocation() ) + QString("'") )
@@ -210,4 +211,75 @@ int dbWriter::clearStudentProfile( int idStudent ) {
 
     int idStudentProfile = res->getCellAsInt(0, 0);
     return idStudentProfile;
+}
+
+int dbWriter::saveCourse( std::shared_ptr< Course > pCourse ) {
+    if( pCourse == nullptr )
+        return -1;
+
+    qDebug() << __PRETTY_FUNCTION__;
+    int courseId = -1;
+    if( pCourse->getId() < 0 ) {
+        courseId = insertCourse( pCourse );
+    }
+    else {
+        courseId = updateCourse( pCourse );
+    }
+    if( courseId >= 0 )
+        pCourse->setId( courseId );
+
+    return courseId;
+}
+
+int dbWriter::insertCourse( std::shared_ptr< Course > pCourse ) {
+    if( pCourse == nullptr )
+        return -1;
+
+    QString sql = QString("select add_course( %1, %2, %3, %4, %5, %6, %7, %8 );")
+                    .arg( pCourse->getCode().empty() ? QString("null::varchar") : QString("'%1'").arg( QString::fromStdString( pCourse->getCode() ) ) )
+                    .arg( pCourse->getName().empty() ? QString("null::varchar") : QString("'%1'").arg( QString::fromStdString( pCourse->getName() ) ) )
+                    .arg( pCourse->getDesc().empty() ? QString("null::text") : QString("'%1'").arg( QString::fromStdString( pCourse->getDesc() ) ) )
+                    .arg( pCourse->getCreditMark() < 0 ? QString("null::integer") : QString::number( pCourse->getCreditMark() ) )
+                    .arg( pCourse->getDepartment() == nullptr ? QString("null::integer") : QString::number( pCourse->getDepartment()->getId() ) )
+                    .arg( pCourse->getProfessor().empty() ? QString("null::varchar") :  QString("'%1'").arg( QString::fromStdString( pCourse->getProfessor() ) ) )
+                    .arg( pCourse->getMaxCapacity() < 0 ? QString("null::integer") : QString::number( pCourse->getMaxCapacity() ) )
+                    .arg( pCourse->isActive() ? QString("true") : QString("false") );
+    std::shared_ptr< DbResult > res = m_db->execute( sql.toStdString().c_str() );
+    if( res == nullptr || res->getRowCount() != 1 )
+        return -1;
+
+    int courseId = res->getCellAsInt( 0, 0 );
+    return courseId;
+}
+
+int dbWriter::updateCourse( std::shared_ptr< Course > pCourse ) {
+    if( pCourse == nullptr || pCourse->getId() < 0 )
+        return -1;
+    QString sql = QString("select update_course( %1, %2, %3, %4, %5, %6, %7, %8, %9 );")
+                    .arg(  pCourse->getId() )
+                    .arg( pCourse->getCode().empty() ? QString("null::varchar") : QString("'%1'").arg( QString::fromStdString( pCourse->getCode() ) ) )
+                    .arg( pCourse->getName().empty() ? QString("null::varchar") : QString("'%1'").arg( QString::fromStdString( pCourse->getName() ) ) )
+                    .arg( pCourse->getDesc().empty() ? QString("null::text") : QString("'%1'").arg( QString::fromStdString( pCourse->getDesc() ) ) )
+                    .arg( pCourse->getCreditMark() < 0 ? QString("null::integer") : QString::number( pCourse->getCreditMark() ) )
+                    .arg( pCourse->getDepartment() == nullptr ? QString("null::integer") : QString::number( pCourse->getDepartment()->getId() ) )
+                    .arg( pCourse->getProfessor().empty() ? QString("null::varchar") :  QString("'%1'").arg( QString::fromStdString( pCourse->getProfessor() ) ) )
+                    .arg( pCourse->getMaxCapacity() < 0 ? QString("null::integer") : QString::number( pCourse->getMaxCapacity() ) )
+                    .arg( pCourse->isActive() ? QString("true") : QString("false") );
+    std::shared_ptr< DbResult > res = m_db->execute( sql.toStdString().c_str() );
+    if( res == nullptr || res->getRowCount() != 1 )
+        return -1;
+
+    int courseId = res->getCellAsInt( 0, 0 );
+    return courseId;
+
+}
+
+int dbWriter::deleteCourse( int idCourse ) {
+    if( idCourse < 0 )
+        return idCourse;
+    QString sql = QString("select delete_course( %1 );").arg( idCourse );
+    std::shared_ptr< DbResult > res = m_db->execute( sql.toStdString().c_str() );
+    if( res == nullptr || res->getRowCount() != 1 )
+        return -1;
+    return idCourse;
 }

@@ -35,6 +35,8 @@ set(HEADERS
     dbEntitiesForm.h
     departmentwidget.h
     studentwidget.h
+    coursewidget.h
+    departmentdialog.h
 )
 
 set(SOURCES
@@ -42,6 +44,8 @@ set(SOURCES
     dbEntitiesForm.cpp
     departmentwidget.cpp
     studentwidget.cpp
+    coursewidget.cpp
+    departmentdialog.cpp
 )
 
 set(FORMS
@@ -49,6 +53,9 @@ set(FORMS
     db_entities_form.ui
     department_widget.ui
     students_widget.ui
+    course_widget.ui
+    enrollment_dialog.ui
+    department_dialog.ui
 )
 
 set(RESOURCES

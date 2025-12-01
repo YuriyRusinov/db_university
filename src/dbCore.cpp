@@ -8,6 +8,8 @@
 #include <dbEntitiesForm.h>
 #include <departmentwidget.h>
 #include <studentwidget.h>
+#include <coursewidget.h>
+#include <departmentdialog.h>
 
 #include <department.hpp>
 #include <students.hpp>
@@ -319,6 +321,11 @@ void dbCore::addEntity( int eType, QAbstractItemModel* mod ) {
                                             break;
                                         }
         case entityTypes::eCourses: { 
+                                        std::shared_ptr< Course > pCourse = std::make_shared< Course >();
+                                        CourseWidget* courseW = new CourseWidget( pCourse );
+                                        connect( courseW, &CourseWidget::saveCourseToDb, m_dbWriter.get(), &dbWriter::saveCourse );
+                                        connect( courseW, &CourseWidget::loadDepartments, this, &dbCore::loadDepartmentsToCourse );
+                                        emit setWidget( courseW );
                                         break;
                                     }
         case entityTypes::eEnrollments: {
@@ -352,7 +359,14 @@ void dbCore::editEntity( int eType, const QModelIndex& wIndex, QAbstractItemMode
                                             emit setWidget( dW );
                                             break;
                                         }
-        case entityTypes::eCourses: break;
+        case entityTypes::eCourses: {   
+                                        std::shared_ptr< Course > pCourse = m_dbLoader->loadCourse( id );
+                                        CourseWidget* courseW = new CourseWidget( pCourse );
+                                        connect( courseW, &CourseWidget::saveCourseToDb, m_dbWriter.get(), &dbWriter::saveCourse );
+                                        connect( courseW, &CourseWidget::loadDepartments, this, &dbCore::loadDepartmentsToCourse );
+                                        emit setWidget( courseW );
+                                        break;
+                                    }
         case entityTypes::eEnrollments: break;
         default: break;
     }
@@ -391,4 +405,25 @@ void dbCore::connectEntitiesForm( QWidget* pForm ) {
     connect( dbWidget, &dbEntitiesForm::addEntityToDB, this, &dbCore::addEntity );
     connect( dbWidget, &dbEntitiesForm::updateEntityInDB, this, &dbCore::editEntity );
     connect( dbWidget, &dbEntitiesForm::delEntityFromDB, this, &dbCore::delEntity );
+}
+
+void dbCore::loadDepartmentsToCourse( std::shared_ptr< Course > pCourse ) {
+    if( pCourse == nullptr ) {
+        return;
+    }
+    std::vector<Department> deps = m_dbLoader->loadDepartments(); 
+    QAbstractItemModel* depMod = new QStandardItemModel;
+    initDepModel ( depMod );
+    DepartmentDialog* depForm = new DepartmentDialog( qobject_cast<QWidget*>(sender()) );
+    depForm->setModel( depMod );
+    if( depForm->exec() != QDialog::Accepted ) {
+        return;
+    }
+    int idDep = depForm->getDepartmentId();
+    qDebug() << __PRETTY_FUNCTION__ << idDep;
+    std::shared_ptr<Department> pDep = m_dbLoader->loadDepartment( idDep );
+    pCourse->setDepartment( pDep );
+    CourseWidget* cW = qobject_cast< CourseWidget* >(sender());
+    if( cW )
+        cW->setCourseDepartment( pDep );
 }
